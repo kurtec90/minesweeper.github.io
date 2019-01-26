@@ -1,0 +1,62 @@
+.gameBlock{
+    width: 650px;
+    padding: 20px
+}
+.gamePanel{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    height: 50px;
+    border-bottom: 1px solid black;
+}
+.mineCount{
+    margin-left: 5px;
+    height: 50px;
+    width: 50px;
+    font-size: 40px;
+}
+.timerBlock{
+    margin-right: 5px;
+    height: 50px;
+    font-size: 40px;
+}
+.minefield{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 48px auto 0px auto;
+}
+
+.minefield.junior{
+    width: 153px;
+}
+.minefield.middle{
+    width: 272px;
+}
+.minefield.expert{
+    width: 510px;
+}
+.oneBlock{
+    width: 17px;
+    height: 17px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: grey;
+}
+.oneBlock.close{
+    background-image: url(./bgClose.png);
+}
+.oneBlock.open{
+  background-image: url(./bgOpen.png);
+}
+.oneBlock.mine{
+  background-image: url(./bgMine.png);
+}

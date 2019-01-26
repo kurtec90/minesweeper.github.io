@@ -1,0 +1,100 @@
+.app {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+}
+
+.appHeader{
+    letter-spacing: 5px;
+    font-size: 26px;
+    color: brown;
+    text-align: center;
+}
+
+.textWrap{
+    margin: auto;
+    font-size: 20px;
+}
+
+.gameWrap{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    width: 900px;
+    height: 500px;
+    background-color: aquamarine;
+    margin: 20px auto 0 auto;
+    border-radius: 5px;
+}
+
+.sidebar{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+    width: 250px;
+    border-right: 1px solid black;
+}
+
+.levelBlock{
+    flex-grow: 1;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+.levelBlock div{
+    height: 50px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.levelBlock input{
+    margin: 10px 5px 5px 0;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+}
+
+.buttonBlock{
+    text-align: center;
+}
+
+.buttonBlock button{
+    margin-bottom: 20px;
+    width: 80%;
+    height: 40px;
+    background-color: darksalmon;
+    border: 0px;
+    outline: 0px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    transition: all ease 0.2s;
+    cursor: pointer;
+}
+
+.buttonBlock button:hover{
+    background-color: darkorange;
+}
+
+.startWrap{
+    width: 650px;
+    padding: 20px;
+    margin: auto;
+    text-align: center;
+    font-size: 40px;
+    letter-spacing: 5px;
+}
