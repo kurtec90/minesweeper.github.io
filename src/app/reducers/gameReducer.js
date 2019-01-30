@@ -36,7 +36,7 @@ const gameReducer = function(state = initialState, action) {
                     ]
                 };
 
-            action.emptyArr.map((id) => {
+            action.emptyArr.forEach((id) => {
 
               newState.gameState[id] = {
 

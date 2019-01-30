@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import store from './../store';
@@ -20,7 +19,7 @@ class LevelBlock extends React.Component{
             changeStateFunc = this.changeLevel,
             rows = [];
 
-        levelParam.map(function(item, i){
+        levelParam.forEach(function(item, i){
 
             let
                 newRow =

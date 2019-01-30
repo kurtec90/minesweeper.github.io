@@ -31,9 +31,9 @@ function getIdLocation(id, matrix){
 
     let location = {};
 
-    matrix.map((arr, i) => {
+    matrix.forEach((arr, i) => {
 
-      arr.map((item, j) => {
+      arr.forEach((item, j) => {
 
         if (item.id === Number(id)) {
             location.i = i;
@@ -90,21 +90,29 @@ function getEmptyBlockArr(id, game, level) {
           location = getIdLocation(checkId, matrix),
           sideBySideIdArr = getSideBySideIdArr(matrix, location);
 
-          sideBySideIdArr.map(function (sideId) {
+          sideBySideIdArr.forEach(function (sideId) {
+
+              let filterResult, filterEmpty;
 
               if (sideId === null) {
                   return;
               }
 
-              resultIdArr.push(sideId);
+              filterResult = resultIdArr.filter((item) => {
+                return item === sideId;
+              })
+
+              if (filterResult.length === 0) {
+                resultIdArr.push(sideId);
+              }
 
               if (game[sideId].content === 0) {
 
-                let filterResult = emptyIdArr.filter((item) => {
+                filterEmpty = emptyIdArr.filter((item) => {
                   return item === sideId;
                 })
 
-                if (filterResult.length === 0) {
+                if (filterEmpty.length === 0) {
                   emptyIdArr.push(sideId);
                 }
               }
@@ -112,7 +120,7 @@ function getEmptyBlockArr(id, game, level) {
 
           count++;
     }
-    
+
     return resultIdArr;
 }
 

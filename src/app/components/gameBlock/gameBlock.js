@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import store from '../../store';
@@ -41,9 +40,18 @@ class GameBlock extends React.Component{
         return true;
     }
 
+    componentWillUpdate() {
+
+        if (this.mineCount === 0) {
+            this.changeForWin();
+        }
+    }
+
     startNewGame(level){
 
         let newGame = createNewGame(level);
+
+        this.endGame = null;
 
         this.saveMineCount(newGame);
 
@@ -51,6 +59,22 @@ class GameBlock extends React.Component{
             type: 'CREATE_NEW_GAME',
             gameState: newGame
         })
+    }
+
+    changeForWin(){
+
+        let
+
+            mine = this.props.gameState.filter((item) => {
+              return item.isMine;
+            }),
+            mineUser = this.props.gameState.filter((item) => {
+              return item.isMine && item.blockState === 'mine';
+            });
+
+        if (mine.length === mineUser.length + 1) {
+            this.endGame = 'win';
+        }
     }
 
     saveMineCount(gameArr){
@@ -64,6 +88,20 @@ class GameBlock extends React.Component{
         this.mineCount = mineArr.length;
     }
 
+
+    changeMineCount(arr){
+
+      let count = 0;
+
+      arr.forEach((item) => {
+          if (this.props.gameState[item].blockState === 'mine') {
+            count++;
+          }
+      });
+
+      this.mineCount = this.mineCount + count;
+    }
+
     getMinefield(){
 
         let
@@ -71,7 +109,7 @@ class GameBlock extends React.Component{
             searchMine = this.searchMine,
             signIsMine = this.signIsMine;
 
-        this.props.gameState.map((item, i) => {
+        this.props.gameState.forEach((item, i) => {
 
             let
                 content = item.blockState === 'close' || item.blockState === 'mine' ?
@@ -98,6 +136,10 @@ class GameBlock extends React.Component{
 
         e.preventDefault();
 
+        if (this.endGame !== null) {
+            return;
+        }
+
         let
             id = e.target.id,
             block = this.props.gameState[id];
@@ -107,7 +149,9 @@ class GameBlock extends React.Component{
         }
 
         if (block.isMine) {
-            this.endGame('crash');
+
+            this.endGame = 'crash';
+            this.changeBlockGame(id, 'mine');
             return;
         }
 
@@ -118,30 +162,37 @@ class GameBlock extends React.Component{
             this.changeEmptyBlockArr(emptyBlockArr);
         }
 
-        this.changeBlockGame(id, 'open')
+        this.changeBlockGame(id, 'open');
     }
 
     signIsMine(e){
 
         e.preventDefault();
 
-        switch (this.props.gameState[e.target.id].blockState) {
+        if (this.endGame !== null) {
+            return;
+        }
+
+        let
+            id = e.target.id;
+
+        switch (this.props.gameState[id].blockState) {
 
           case 'open':
-            return;
+            break;
 
           case 'mine':
             this.mineCount++;
-            this.changeBlockGame(e.target.id, 'close')
+            this.changeBlockGame(id, 'close')
             break;
 
           case 'close':
             this.mineCount--;
-            this.changeBlockGame(e.target.id, 'mine')
+            this.changeBlockGame(id, 'mine')
             break;
 
           default:
-            return;
+            break;
         }
     }
 
@@ -158,29 +209,24 @@ class GameBlock extends React.Component{
 
     changeEmptyBlockArr(arr){
 
+        this.changeMineCount(arr);
+
         store.dispatch({
             type: 'CHANGE_EMPTY_BLOCK_ARR',
             emptyArr: arr
         })
     }
 
-    endGame(param) {
+    getEndGameBlock() {
 
-      switch (param) {
-        case 'crash':
+        if (this.endGame !== null) {
 
-          break;
+            let text = this.endGame === 'crash' ?
+                'CRASH GAME':
+                'WIN GAME';
 
-        case 'win':
-
-          break;
-
-        default:
-          break;
-
-      }
-
-        alert('LOSER');
+            return <div className="endGameBlock">{text}</div>;
+        }
     }
 
     render() {
@@ -204,6 +250,9 @@ class GameBlock extends React.Component{
                         {this.getMinefield()}
                     </div>
                 </div>
+
+                {this.getEndGameBlock()}
+
             </div>
         )
     }
@@ -214,6 +263,7 @@ const mapStateToProps = function(store) {
     return {
         appState: store.appState.appState,
         gameState: store.gameState.gameState
+        // timerState: store.timerState.timerState
     };
 }
 

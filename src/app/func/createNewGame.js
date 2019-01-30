@@ -37,7 +37,6 @@ function createNewGame(level) {
         arr.forEach(function(item, j) {
 
           if (item.isMine) {
-              item.content = 'mine';
               return;
           }
 
