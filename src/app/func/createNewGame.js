@@ -37,7 +37,7 @@ function createNewGame(level) {
         arr.forEach(function(item, j) {
 
           if (item.isMine) {
-              Object.defineProperty(item, 'content', {value: 'mine'})
+              item.content = 'mine';
               return;
           }
 
@@ -75,7 +75,7 @@ function createNewGame(level) {
               }
           });
 
-          Object.defineProperty(item, 'content', {value: count})
+          item.content = count;
         })
 
     })

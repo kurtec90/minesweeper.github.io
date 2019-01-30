@@ -50,6 +50,7 @@
     font-size: 14px;
     font-weight: 900;
     color: grey;
+    cursor: pointer;
 }
 .oneBlock.close{
     background-image: url(./bgClose.png);

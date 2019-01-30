@@ -7,8 +7,6 @@ import store from './store';
 import LevelBlock from './components/levelBlock';
 import GameBlock from './components/gameBlock/gameBlock';
 
-import createNewGame from './func/createNewGame';
-
 import './App.css';
 
 class App extends React.Component{
@@ -23,19 +21,18 @@ class App extends React.Component{
 
         return this.props.appState === 0 ?
                   <div className="startWrap">COME ON</div> :
-                  <GameBlock level={this.currentGameLevel} game={this.game} />;
+                  <GameBlock level={this.currentGameLevel} />;
     }
 
     startNewGame() {
 
-        let newAppState = this.props.appState + 1;
+        let gameID = this.props.appState + 1;
 
         this.currentGameLevel = this.props.levelState;
-        this.game = createNewGame(this.currentGameLevel);
 
         store.dispatch({
             type: 'CLICK_START_GAME',
-            appState: newAppState
+            appState: gameID
         });
     }
 
@@ -73,7 +70,6 @@ const mapStateToProps = function(store) {
 
     return {
         appState: store.appState.appState,
-        // gameState: store.gameState.gameState,
         levelState: store.levelState.levelState,
         timerState: store.timerState.timerState
     };

@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import store from './../../store';
+import store from '../../store';
 
-import bgClose from './bgClose.png';
-
-import Timer from './../timer.js';
+import Timer from '../timer.js';
+import createNewGame from '../../func/createNewGame';
+import getEmptyBlockArr from '../../func/getEmptyBlockArr';
 
 import './gameBlock.css';
 
@@ -16,28 +16,53 @@ class GameBlock extends React.Component{
 
         super(props);
 
-        this.game = this.props.game;
-
         this.searchMine = this.searchMine.bind(this);
         this.signIsMine = this.signIsMine.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillMount(){
+
+        this.startNewGame(this.props.level);
+    }
+
+    componentWillReceiveProps(nextProps) {
 
         if (this.props.appState !== nextProps.appState) {
-          this.game = nextProps.game;
+            this.startNewGame(nextProps.level);
         }
     }
 
-    getMineCount(){
+    shouldComponentUpdate(nextProps){
 
-        let mineCount = this.game.filter(function (item) {
-            return item.isMine === true;
-        });
+        if (this.props.appState !== nextProps.appState && this.props.gameState === nextProps.gameState) {
+            return false;
+        }
 
-        return mineCount.length;
+        return true;
     }
 
+    startNewGame(level){
+
+        let newGame = createNewGame(level);
+
+        this.saveMineCount(newGame);
+
+        store.dispatch({
+            type: 'CREATE_NEW_GAME',
+            gameState: newGame
+        })
+    }
+
+    saveMineCount(gameArr){
+
+        let mineArr = [];
+
+        mineArr = gameArr.filter((item) => {
+            return item.isMine;
+        });
+
+        this.mineCount = mineArr.length;
+    }
 
     getMinefield(){
 
@@ -46,20 +71,24 @@ class GameBlock extends React.Component{
             searchMine = this.searchMine,
             signIsMine = this.signIsMine;
 
-        this.game.forEach(function(item, i) {
+        this.props.gameState.map((item, i) => {
+
+            let
+                content = item.blockState === 'close' || item.blockState === 'mine' ?
+                  '' : item.content === 0 ?
+                  '' : item.content;
 
             minefield.push(
                 <div
                     className={"oneBlock " + item.blockState}
                     onClick={searchMine}
                     onContextMenu={signIsMine}
-                    id={i}
-                    key={i}>
+                    id={item.id}
+                    key={item.id}>
 
-                    {item.blockState === 'open' && item.content !== 0 ? item.content : ''}
+                    {content}
 
                 </div>);
-
         })
 
         return minefield;
@@ -69,32 +98,93 @@ class GameBlock extends React.Component{
 
         e.preventDefault();
 
-        this.changeBlockGame(e.target.id, 'open')
-    }
+        let
+            id = e.target.id,
+            block = this.props.gameState[id];
 
+        if (block.blockState === 'mine') {
+            return;
+        }
+
+        if (block.isMine) {
+            this.endGame('crash');
+            return;
+        }
+
+        if (block.content === 0 && block.blockState === 'close') {
+
+            let emptyBlockArr = getEmptyBlockArr(id, this.props.gameState, this.props.level)
+
+            this.changeEmptyBlockArr(emptyBlockArr);
+        }
+
+        this.changeBlockGame(id, 'open')
+    }
 
     signIsMine(e){
 
         e.preventDefault();
 
-        this.changeBlockGame(e.target.id, 'mine')
+        switch (this.props.gameState[e.target.id].blockState) {
+
+          case 'open':
+            return;
+
+          case 'mine':
+            this.mineCount++;
+            this.changeBlockGame(e.target.id, 'close')
+            break;
+
+          case 'close':
+            this.mineCount--;
+            this.changeBlockGame(e.target.id, 'mine')
+            break;
+
+          default:
+            return;
+        }
     }
 
     changeBlockGame(id, newState){
 
-        let
-            newGameState = this.props.gameState + 1;
-
-        this.game[id].blockState = newState;
-
         store.dispatch({
-            type: 'CLICK_ACTION',
-            gameState: newGameState
+            type: 'CHANGE_BLOCK_STATE_ACTION',
+            changeParam: {
+              id: id,
+              blockState: newState
+            }
         })
     }
 
+    changeEmptyBlockArr(arr){
+
+        store.dispatch({
+            type: 'CHANGE_EMPTY_BLOCK_ARR',
+            emptyArr: arr
+        })
+    }
+
+    endGame(param) {
+
+      switch (param) {
+        case 'crash':
+
+          break;
+
+        case 'win':
+
+          break;
+
+        default:
+          break;
+
+      }
+
+        alert('LOSER');
+    }
+
     render() {
-console.log(this.props.game);
+
         return(
 
             <div className="gameBlock">
@@ -102,7 +192,7 @@ console.log(this.props.game);
                 <div className="gamePanel">
 
                     <div className="mineCount">
-                        {this.getMineCount()}
+                        {this.mineCount}
                     </div>
 
                     <Timer/>
